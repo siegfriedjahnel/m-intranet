@@ -1,0 +1,12 @@
+Objects
+
+user
+-	create | create set(username=$username, email=$email,... )
+-	update | update user set pwhash where user.id = userId
+
+
+group
+
+
+
+document

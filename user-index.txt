@@ -1,0 +1,90 @@
+<?php
+//user.php
+session_start();
+if (!isset($_SERVER['PHP_AUTH_USER']) || $_SESSION['loginAttempt'] == FALSE) {
+    $_SESSION['loginAttempt'] = TRUE;
+    header('WWW-Authenticate: Basic realm="My Website"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo "<p>Access denied. You did not enter a user.</p>";
+    echo "<p><a href='index.php'>zurück zur Startseite</a><p>";
+    
+    
+    exit; 
+}
+
+//$pw_hash1 = select pw_hash from user where unsername = '$_SERVER['PHP_AUTH_USER']'
+//$pw_hash2 = hash($_SERVER['PHP_AUTH_PW'])
+//if($pw_hash1 == pw_hash2)
+
+if ($_SERVER['PHP_AUTH_PW'] != '1234') {
+    header('WWW-Authenticate: Basic realm="My Website"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo '<p>Access denied. You did  enter a  wrong password.</p>';
+    echo "<p><a href='index.php'>zurück zur Startseite</a><p>";
+    
+    exit; 
+    
+} 
+echo '<p>Hallo '.$_SERVER['PHP_AUTH_USER'].'</p>';
+echo "<p>session: $_SESSION[loginAttempt]</p>";
+echo "<p><a href='?action=logout'>abmelden</a><p>";
+if(isset($_GET['action'])){
+    $action=$_GET['action'];
+}else{
+    $action = 'default';
+}    
+switch($action){
+    case 'logout':
+        session_destroy();
+        header('Location: index.php');
+        break;
+}
+
+?>
+
+
+ <?php
+//index.php
+ echo "<p>user: ". $_SERVER['PHP_AUTH_USER']."</p>";
+
+ ?>
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intranet-Landingpage</title>
+<meta name="author" content="name">
+<meta name="description" content="description here">
+<meta name="keywords" content="keywords,here">
+<link rel="shortcut icon" href="favicon.ico" >
+
+</head>
+<body>
+    <h1>INTRANET</h1>
+<p><a href = "user.php">User-login</a></p>
+<p><a href = "admin.php">Admin-login</a></p>
+<p><a href = "index.php?action=sendNewPW">Passwort vergessen</a></p>
+<p><a href = "index.php?action=sendMyUsername">Username vergessen</a></p>
+
+<?php
+if(isset($_GET['action'])){
+    $action = $_GET['action'];
+}else{
+    $action = "default";
+}
+
+switch($action){
+    case "sendNewPW":
+        echo "<p>Bitte senden sie mir ein neues Passwort an diese email-Adresse:</p>";
+        echo "<p><form method = 'GET' action='index.php?action=newPWSent'><input type='email'> <input type='submit' value='senden'></form</p>";
+    break;
+    case "sendMyUsername":
+
+    break;
+}
+
+?>
+</body>
+
+</html>
